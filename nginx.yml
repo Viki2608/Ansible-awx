@@ -2,6 +2,7 @@
 - name: Deploy Nginx
   hosts: all
   become: true
+  remote_user: ubuntu
   tasks:
     - name: Update package cache
       ansible.builtin.apt:

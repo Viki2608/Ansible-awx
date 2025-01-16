@@ -4,6 +4,5 @@ all:
       ansible_host: 50.19.170.11
     nginx_server_2:
       ansible_host: 54.88.49.184
-  vars:
-    ansible_user: ubuntu
-    ansible_ssh_private_key_file: /home/vicky/MyAWSKey.pem
+  # vars:
+  #   ansible_ssh_private_key_file: /home/vicky/MyAWSKey.pem
