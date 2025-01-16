@@ -1,0 +1,52 @@
+---
+- name: Deploy Nginx
+  hosts: all
+  become: true
+  tasks:
+    - name: Update package cache
+      ansible.builtin.apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install Nginx (Debian-based)
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Start and enable Nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Copy static website files
+      copy:
+        src: /home/vicky/static_website/
+        dest: /var/www/html/
+        owner: www-data
+        group: www-data
+        mode: '0755'
+    
+    - name: Configure Nginx to serve the static website
+      copy:
+        dest: /etc/nginx/sites-available/default
+        content: |
+          server {
+              listen 80 default_server;
+              listen [::]:80 default_server;
+
+              root /var/www/html;
+              index index.html;
+
+              server_name _;
+
+              location / {
+                  try_files $uri $uri/ =404;
+              }
+          }
+    
+    - name: Restart Nginx service
+      service:
+        name: nginx
+        state: restarted
